@@ -21,6 +21,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation:2.7.6'
 	implementation 'org.springframework.boot:spring-boot-starter-security:2.7.6'
 	implementation 'org.slf4j:slf4j-api:1.7.36'
+	implementation 'com.mysql:mysql-connector-j:8.0.31'
 	testImplementation ('org.springframework.boot:spring-boot-starter-test'){
 		exclude group : 'org.junit.vintage', module : 'junit-vintage-engine'
 	}
