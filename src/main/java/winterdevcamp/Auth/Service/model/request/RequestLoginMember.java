@@ -2,8 +2,10 @@ package winterdevcamp.Auth.Service.model.request;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class RequestLoginMember {
     private String username;
     private String password;
