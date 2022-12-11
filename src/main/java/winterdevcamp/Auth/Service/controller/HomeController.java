@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
 import winterdevcamp.Auth.Service.model.Member;
 import winterdevcamp.Auth.Service.service.AuthService;
 
@@ -16,15 +17,15 @@ public class HomeController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/user/signupform")
+    @GetMapping("/user/signup")
     public String signupForm(){
         return "/signup";
     }
 
-    @GetMapping("/login")
+    @GetMapping("/user/login")
     public String login(){return "/login";}
 
-    @GetMapping("/authentication")
+    @GetMapping("/user/verify")
     public String email_authentication(Principal principal, Model model){
         String username = principal.getName();
         try {
