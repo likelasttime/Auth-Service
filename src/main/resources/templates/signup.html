@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
-
-<head>
+<head xmlns:th="http://www.w3.org/1999/xhtml">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,7 +72,7 @@
                 console.log("result : ", result);
                 if(result.response == "success"){
                     alert("회원가입 성공!");
-                    self.location = "/";
+                    self.location = "/user/login";
                 }else{
                     alert("회원가입을 실패했습니다.");
                 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import winterdevcamp.Auth.Service.model.Member;
 import winterdevcamp.Auth.Service.service.AuthService;
 
@@ -27,8 +28,8 @@ public class HomeController {
 
     @GetMapping("/user/verify")
     public String email_authentication(Principal principal, Model model){
-        String username = principal.getName();
         try {
+            String username = principal.getName();
             Member member = authService.findByUsername(username);
             model.addAttribute("email", member.getEmail());
             model.addAttribute("username", username);
@@ -36,5 +37,11 @@ public class HomeController {
             log.info("사용자 정보가 없습니다.");
         }
         return "/authentication";
+    }
+
+    @GetMapping("/user/verify/{key}")
+    public String verify(@PathVariable String key, Model model){
+        model.addAttribute("key", key);
+        return "/verify";
     }
 }

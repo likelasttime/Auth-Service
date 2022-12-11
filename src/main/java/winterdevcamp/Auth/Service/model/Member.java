@@ -55,4 +55,8 @@ public class Member {
         this.role = UserRole.ROLE_NOT_PERMITTED;
         this.salt = salt;
     }
+
+    public void updateRole(UserRole role){
+        this.role = role;
+    }
 }
