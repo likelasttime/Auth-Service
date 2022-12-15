@@ -82,4 +82,25 @@ public class AuthServiceImpl implements AuthService {
         return member;
     }
 
+    @Override
+    public boolean isPasswordUuidValidate(String key){
+        String memberId = redisUtil.getData(key);
+        return !memberId.equals("");
+    }
+
+    @Override
+    public void changePassword(Member member, String password) throws NotFoundException{
+        if(member == null) throw new NotFoundException("changePassword(), 멤버가 조회되지 않음");
+        String salt = saltUtil.genSalt();
+        member.updateSaltAndPassword(new Salt(salt), saltUtil.encodePassword(salt, password));
+    }
+
+    @Override
+    public void requestChangePassword(Member member) throws NotFoundException{
+        String CHANGE_PASSWORD_LINK = "http://localhost:8080/user/password/";
+        if(member == null) throw new NotFoundException("멤버가 조회되지 않음");
+        String key = UUID.randomUUID().toString();
+        redisUtil.setDataExpire(key, member.getUsername(), 60 * 30L);
+        emailService.sendMail(member.getEmail(), "사용자 비밀번호 안내 메일", CHANGE_PASSWORD_LINK + key);
+    }
 }

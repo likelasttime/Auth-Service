@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .antMatchers("/").permitAll()
                 .antMatchers("/user/signup").permitAll()
                 .antMatchers("/user/login").permitAll()
+                .antMatchers("/user/password/**").permitAll()
                 .antMatchers("/user/verify/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

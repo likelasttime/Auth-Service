@@ -44,4 +44,14 @@ public class HomeController {
         model.addAttribute("key", key);
         return "/verify";
     }
+
+    @GetMapping("/user/password")
+    public String requestPasswordMail(){
+        return "/updatePassword";
+    }
+
+    @GetMapping("/user/password/{key}")
+    public String requestPassword(){
+        return "/passwordMail";
+    }
 }

@@ -59,4 +59,9 @@ public class Member {
     public void updateRole(UserRole role){
         this.role = role;
     }
+
+    public void updateSaltAndPassword(Salt salt, String password){
+        this.salt = salt;
+        this.password = password;
+    }
 }

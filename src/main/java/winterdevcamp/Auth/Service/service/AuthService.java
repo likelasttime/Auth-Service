@@ -16,4 +16,10 @@ public interface AuthService {
     void modifyUserRole(Member member, UserRole userRole);
 
     Member findByUsername(String username) throws NotFoundException;
+
+    boolean isPasswordUuidValidate(String key);
+
+    void changePassword(Member member, String password) throws NotFoundException;
+
+    void requestChangePassword(Member member) throws NotFoundException;
 }

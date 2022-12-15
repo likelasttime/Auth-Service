@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import winterdevcamp.Auth.Service.model.Member;
 import winterdevcamp.Auth.Service.model.Response;
+import winterdevcamp.Auth.Service.model.request.RequestChangePassword1;
+import winterdevcamp.Auth.Service.model.request.RequestChangePassword2;
 import winterdevcamp.Auth.Service.model.request.RequestLoginMember;
 import winterdevcamp.Auth.Service.model.request.RequestVerifyEmail;
 import winterdevcamp.Auth.Service.service.AuthService;
@@ -89,6 +91,58 @@ public class MemberController {
         }catch(Exception e){
             log.info("인증메일을 확인하는데 실패했습니다.");
             response = new Response("error", "인증메일을 확인하는데 실패했습니다.", null);
+        }
+        return response;
+    }
+
+    @PostMapping("/password/{key}")
+    public Response isPasswordUUIdValidate(@PathVariable String key){
+        Response response;
+        try{
+            if(authService.isPasswordUuidValidate(key))
+                response = new Response("success", "정상적인 접근입니다.", null);
+            else
+                response = new Response("error", "유효하지 않은 Key 값입니다.", null);
+        }catch (Exception e){
+            response = new Response("error", "유효하지 않은 key 값입니다.", null);
+        }
+        return response;
+    }
+
+    @PostMapping("/password")
+    public Response requestChangePassword(@RequestBody RequestChangePassword1 requestChangePassword1){
+        Response response;
+        String username = "";
+        try{
+            username = requestChangePassword1.getUsername();
+            Member member = authService.findByUsername(username);
+            if(!member.getEmail().equals(requestChangePassword1.getEmail())) throw new NoSuchFieldException("");
+            authService.requestChangePassword(member);
+            log.info("성공적으로 " + username + "의 비밀번호 변경요청을 수행");
+            response = new Response("success", "성공적으로 사용자의 비밀번호 변경요청을 수행했습니다.", null);
+        }catch(NoSuchFieldException e){
+            log.info("사용자 정보를 조회할 수 없습니다");
+            response = new Response("error", "사용자 정보를 조회할 수 없습니다.", null);
+        }catch(Exception e){
+            log.info(username + " 비밀번호 변경요청을 수행할 수 없습니다");
+            response = new Response("error", "비밀번호 변경 요청을 할 수 없습니다.", null);
+        }
+        return response;
+    }
+
+    @PutMapping("/password")
+    public Response changePassword(@RequestBody RequestChangePassword2 requestChangePassword2){
+        Response response;
+        String username = "";
+        try{
+            username = requestChangePassword2.getUsername();
+            Member member = authService.findByUsername(username);
+            authService.changePassword(member, requestChangePassword2.getPassword());
+            log.info("성공적으로" + username + "의 비밀번호를 변경했습니다.");
+            response = new Response("success", "성공적으로 사용자의 비밀번호를 변경했습니다.", null);
+        }catch(Exception e){
+            log.info(username + "의 비밀번호를 변경하지 못했습니다.");
+            response = new Response("error", "사용자의 비밀번호를 변경할 수 없습니다.", null);
         }
         return response;
     }
