@@ -13,7 +13,7 @@ create table member
     username varchar(20) not null unique,
     password varchar(128) not null,
     name varchar(20) not null,
-    email varchar(128) not null,
+    email varchar(128) not null unique,
     role varchar(128) not null,
     create_At datetime,
     update_At datetime,
