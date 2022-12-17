@@ -34,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
                 .username(member.getUsername())
                 .name(member.getName())
                 .email(member.getEmail())
+                .role(UserRole.ROLE_NOT_PERMITTED)
                 .salt(Salt.builder().salt(salt).build())
                 .password(saltUtil.encodePassword(salt, password))
                 .build();

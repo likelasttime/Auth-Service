@@ -53,7 +53,7 @@ public class Member {
         this.password = password;
         this.name = name;
         this.email = email;
-        this.role = UserRole.ROLE_NOT_PERMITTED;
+        this.role = role;
         this.salt = salt;
     }
 
