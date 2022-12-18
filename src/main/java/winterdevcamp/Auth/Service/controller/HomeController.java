@@ -54,4 +54,9 @@ public class HomeController {
     public String requestPassword(){
         return "/passwordMail";
     }
+
+    @GetMapping("/manage_users")
+    public String getUsers(){
+        return "/manage/members";
+    }
 }
