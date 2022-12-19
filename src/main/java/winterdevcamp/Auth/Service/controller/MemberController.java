@@ -50,7 +50,6 @@ public class MemberController {
         try{
             String username = user.getUsername();
             final Member member = authService.loginMember(username, user.getPassword());
-            if(member.getRole().name().equals("ROLE_NOT_PERMITTED")) return new Response("error", "이메일 인증이 필요합니다.", null);
             final String token = jwtUtil.generateToken(member);
             final String refreshJwt = jwtUtil.generateRefreshToken(member);
             Cookie accessToken = cookieUtil.createCookie(JwtUtil.ACCESS_TOKEN_NAME, token);
@@ -59,6 +58,7 @@ public class MemberController {
             res.addCookie(accessToken);
             res.addCookie(refreshToken);
             log.info(username + " 로그인 성공");
+            if(member.getRole().name().equals("ROLE_NOT_PERMITTED")) return new Response("success", "이메일 인증이 필요합니다.", token);
             return new Response("success", "로그인에 성공했습니다.", token);
         }catch(Exception e){
             return new Response("error", "로그인에 실패했습니다.", e.getMessage());

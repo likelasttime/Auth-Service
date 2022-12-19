@@ -38,14 +38,13 @@
                 success : function(result){
                     console.log("result : ", result);
                     if(result.response == "success"){
-                        self.location = "/";
-                    }else{
                         if(result.message == "이메일 인증이 필요합니다."){
                             self.location = "/user/verify";
+                        }else{
+                            self.location = "/";
                         }
-                        else{
-                            alert("로그인을 실패했습니다.");
-                        }
+                    }else{
+                        alert(result.data);
                     }
                 }
             });
