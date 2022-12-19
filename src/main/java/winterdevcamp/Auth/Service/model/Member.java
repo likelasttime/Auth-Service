@@ -65,4 +65,9 @@ public class Member {
         this.salt = salt;
         this.password = password;
     }
+
+    public void updateInfo(String name, String newPwd){
+        this.name = name;
+        this.password = newPwd;
+    }
 }
