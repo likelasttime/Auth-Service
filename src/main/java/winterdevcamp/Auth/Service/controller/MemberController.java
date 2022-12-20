@@ -5,14 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import winterdevcamp.Auth.Service.model.Member;
 import winterdevcamp.Auth.Service.model.Response;
-import winterdevcamp.Auth.Service.model.request.RequestChangePassword1;
-import winterdevcamp.Auth.Service.model.request.RequestChangePassword2;
-import winterdevcamp.Auth.Service.model.request.RequestLoginMember;
-import winterdevcamp.Auth.Service.model.request.RequestVerifyEmail;
-import winterdevcamp.Auth.Service.service.AuthService;
-import winterdevcamp.Auth.Service.service.CookieUtil;
-import winterdevcamp.Auth.Service.service.JwtUtil;
-import winterdevcamp.Auth.Service.service.RedisUtil;
+import winterdevcamp.Auth.Service.model.request.*;
+import winterdevcamp.Auth.Service.service.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +26,9 @@ public class MemberController {
 
     @Autowired
     private RedisUtil redisUtil;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/signup")
     public Response signUpUser(@RequestBody Member member){
@@ -143,6 +140,20 @@ public class MemberController {
         }catch(Exception e){
             log.info(username + "의 비밀번호를 변경하지 못했습니다.");
             response = new Response("error", "사용자의 비밀번호를 변경할 수 없습니다.", null);
+        }
+        return response;
+    }
+
+    @PutMapping("/info")
+    public Response updateInfo(@RequestBody UpdateMemberRequest updateMemberRequest){
+        Response response;
+        try{
+            userService.updateMemberInfo(updateMemberRequest);
+            log.info(updateMemberRequest.getUsername() + "의 정보 수정에 성공했습니다.");
+            response = new Response("success", "성공적으로 사용자의 정보를 변경했습니다.", null);
+        }catch(Exception e){
+            log.info(e.getMessage());
+            response = new Response("error", "사용자 정보 수정에 실패했습니다.", null);
         }
         return response;
     }

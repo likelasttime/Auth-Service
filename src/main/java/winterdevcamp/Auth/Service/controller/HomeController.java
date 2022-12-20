@@ -1,5 +1,6 @@
 package winterdevcamp.Auth.Service.controller;
 
+import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import winterdevcamp.Auth.Service.model.Member;
+import winterdevcamp.Auth.Service.model.UpdateMemberResponse;
 import winterdevcamp.Auth.Service.service.AuthService;
 
 import java.security.Principal;
@@ -58,5 +60,21 @@ public class HomeController {
     @GetMapping("/manage_users")
     public String getUsers(){
         return "/manage/members";
+    }
+
+    @GetMapping("/user/info")
+    public String updateInfo(Model model, Principal principal){
+        try {
+            Member member = authService.findByUsername(principal.getName());
+            UpdateMemberResponse updateMemberResponse = UpdateMemberResponse.builder()
+                    .name(member.getName())
+                    .email(member.getEmail())
+                    .username(member.getUsername())
+                    .build();
+            model.addAttribute("member", updateMemberResponse);
+        }catch(NotFoundException e){
+            log.info("사용자 정보가 없습니다.");
+        }
+        return "/mypage";
     }
 }
