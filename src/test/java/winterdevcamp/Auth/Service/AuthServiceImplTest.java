@@ -2,7 +2,6 @@ package winterdevcamp.Auth.Service;
 
 import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +11,8 @@ import winterdevcamp.Auth.Service.repository.MemberRepository;
 import winterdevcamp.Auth.Service.service.AuthService;
 
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Slf4j
@@ -42,7 +43,7 @@ public class AuthServiceImplTest {
 
         // then
         List<Member> result = memberRepository.findAll();
-        Assertions.assertThat(result.size()).isEqualTo(1);
+        assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
@@ -89,7 +90,7 @@ public class AuthServiceImplTest {
         // then
         try{
             Member after_update = authService.loginMember(member.getUsername(), update_password);
-            Assertions.assertThat(after_update.getPassword()).isEqualTo(update_password);
+            assertThat(after_update.getPassword()).isEqualTo(update_password);
         }catch(Exception e){
             e.printStackTrace();
         }
