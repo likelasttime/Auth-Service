@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
@@ -19,17 +17,13 @@ public class Member {
     private int id;
 
     @Column(unique = true)
-    @NotBlank
     private String username;
 
-    @NotBlank
     private String password;
 
-    @NotBlank
     private String name;
 
     @Column(unique = true)
-    @NotBlank
     private String email;
 
     @Enumerated(EnumType.STRING)
