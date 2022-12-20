@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import winterdevcamp.Auth.Service.model.Member;
 import winterdevcamp.Auth.Service.model.Salt;
 import winterdevcamp.Auth.Service.model.UserRole;
+import winterdevcamp.Auth.Service.model.request.SignUpForm;
 import winterdevcamp.Auth.Service.repository.MemberRepository;
 
 import java.util.UUID;
@@ -27,13 +28,13 @@ public class AuthServiceImpl implements AuthService {
     private EmailService emailService;
 
     @Override
-    public void signUpMember(Member member){
-        String password = member.getPassword();
+    public void signUpMember(SignUpForm signUpForm){
+        String password = signUpForm.getPassword();
         String salt = saltUtil.genSalt();
         Member member1 = Member.builder()
-                .username(member.getUsername())
-                .name(member.getName())
-                .email(member.getEmail())
+                .username(signUpForm.getUsername())
+                .name(signUpForm.getName())
+                .email(signUpForm.getEmail())
                 .role(UserRole.ROLE_NOT_PERMITTED)
                 .salt(Salt.builder().salt(salt).build())
                 .password(saltUtil.encodePassword(salt, password))

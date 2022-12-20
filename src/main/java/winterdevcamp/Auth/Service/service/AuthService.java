@@ -3,9 +3,10 @@ package winterdevcamp.Auth.Service.service;
 import javassist.NotFoundException;
 import winterdevcamp.Auth.Service.model.Member;
 import winterdevcamp.Auth.Service.model.UserRole;
+import winterdevcamp.Auth.Service.model.request.SignUpForm;
 
 public interface AuthService {
-    void signUpMember(Member member);
+    void signUpMember(SignUpForm signUpForm);
 
     Member loginMember(String id, String password) throws Exception;
 
