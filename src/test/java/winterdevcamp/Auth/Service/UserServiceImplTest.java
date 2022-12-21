@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import winterdevcamp.Auth.Service.model.Member;
+import winterdevcamp.Auth.Service.model.request.SignUpForm;
 import winterdevcamp.Auth.Service.model.request.UpdateMemberRequest;
 import winterdevcamp.Auth.Service.repository.MemberRepository;
 import winterdevcamp.Auth.Service.service.AuthService;
@@ -32,12 +33,8 @@ public class UserServiceImplTest {
     @Test
     public void updateMemberInfo(){
         // given
-        Member member = Member.builder()
-                .username("wjd00")
-                .password("helloworld")
-                .name("정")
-                .email("test@gmail.com")
-                .build();
+        SignUpForm signUpForm = new SignUpForm("자바", "java00", "lovejava", "java00@test.com");
+        Member member = memberRepository.findByUsername("java00");
 
         UpdateMemberRequest request = UpdateMemberRequest.builder()
                 .username("wjd00")
@@ -45,7 +42,7 @@ public class UserServiceImplTest {
                 .name("개명")
                 .build();
 
-        authService.signUpMember(member);
+        authService.signUpMember(signUpForm);
         try {
             userService.updateMemberInfo(request);
 
