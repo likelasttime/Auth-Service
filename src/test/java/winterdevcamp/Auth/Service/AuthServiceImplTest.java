@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import winterdevcamp.Auth.Service.model.Member;
+import winterdevcamp.Auth.Service.model.request.SignUpForm;
 import winterdevcamp.Auth.Service.repository.MemberRepository;
 import winterdevcamp.Auth.Service.service.AuthService;
 
@@ -31,15 +32,10 @@ public class AuthServiceImplTest {
     @Test
     public void signUp(){
         // given
-        Member member = Member.builder()
-                .username("wjd00")
-                .password("helloworld")
-                .name("정")
-                .email("test@gmail.com")
-                .build();
+        SignUpForm signUpForm = new SignUpForm("자바", "java00", "lovejava", "java00@test.com");
 
         // when
-        authService.signUpMember(member);
+        authService.signUpMember(signUpForm);
 
         // then
         List<Member> result = memberRepository.findAll();
@@ -49,18 +45,14 @@ public class AuthServiceImplTest {
     @Test
     public void login(){
         // given
-        Member member = Member.builder()
-                .username("wjd00")
-                .password("helloworld")
-                .name("정")
-                .email("test@gmail.com")
-                .build();
+        SignUpForm signUpForm = new SignUpForm("자바", "java00", "lovejava", "java00@test.com");
 
-        authService.signUpMember(member);
+        // when
+        authService.signUpMember(signUpForm);
 
         try{
             // when
-            authService.loginMember(member.getUsername(), member.getPassword());
+            authService.loginMember(signUpForm.getUsername(), signUpForm.getPassword());
             // then
             log.info("로그인 성공");
         }catch(Exception e){
@@ -71,13 +63,9 @@ public class AuthServiceImplTest {
     @Test
     public void changePassword(){
         // given
-        Member member = Member.builder()
-                .username("wjd00")
-                .password("helloworld")
-                .name("정")
-                .email("test@gmail.com")
-                .build();
-        authService.signUpMember(member);
+        SignUpForm signUpForm = new SignUpForm("자바", "java00", "lovejava", "java00@test.com");
+        authService.signUpMember(signUpForm);
+        Member member = memberRepository.findByUsername("java00");
 
         // when
         String update_password = "newPassword";
