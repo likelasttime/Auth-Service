@@ -44,42 +44,6 @@
       box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15)
     }
   </style>
-
-  <script>
-    function signup(){
-        const email = $('#email').val();
-        const username = $('#username').val();
-        const pw = $('#password').val();
-        const name = $('#name').val();
-
-        const member = {
-            email : email,
-            username : username,
-            password : pw,
-            name : name
-        };
-
-        $.ajax({
-            type : "POST",
-            url : "/user/signup",
-            headers : {
-                "Content-Type" : "application/json",
-                "X-HTTP-Method-Override" : "POST"
-            },
-            dataType : "json",
-            data : JSON.stringify(member),
-            success : function(result){
-                console.log("result : ", result);
-                if(result.response == "success"){
-                    alert("회원가입 성공!");
-                    self.location = "/user/login";
-                }else{
-                    alert("회원가입을 실패했습니다.");
-                }
-            }
-        });
-    }
-  </script>
 </head>
 
 <body>
@@ -87,42 +51,47 @@
     <div class="input-form-backgroud row">
         <div class="input-form col-md-12 mx-auto">
             <h4 class="mb-3">회원가입</h4>
-            <form class="validation-form" th:action="@{/user/signup}" th:method="post" modelAttribute="member" novalidate>
-                <div class="row">
+            <form class="validation-form needs-validation" th:action="@{/user/signup}" th:method="post" novalidate>
+                <div class="row form-group">
                     <div class="col-md-6 mb-3">
                         <label for="name">이름</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="" value="" required>
-                        <div class="invalid-feedback">
-                            이름을 입력해주세요.
-                        </div>
+                        <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
+                               minlength="2" maxlength="10" required>
+                        <small id="nameHelp" class="form-text text-muted">
+                            공백없이 문자와 숫자로만 2자 이상 10자 이내로 입력하세요. 가입후에 변경할 수 있습니다.
+                        </small>
+                        <div class="invalid-feedback">이름을 입력해주세요.</div>
                     </div>
-                    <div class="col-md-6 mb-3">
+
+                    <div class="col-md-6 mb-3 form-group">
                         <label for="username">아이디</label>
-                        <input type="text" class="form-control" id="username" name="username" placeholder="" value="" required>
-                        <div class="invalid-feedback">
-                            아이디를 입력해주세요.
-                        </div>
+                        <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" required>
+                        <small id="usernameHelp" class="form-text text-muted">
+                            공백없이 소문자와 숫자로만 3자 이상 20자 이내로 입력하세요.
+                        </small>
+                        <div class="invalid-feedback">아이디를 입력해주세요.</div>
                     </div>
                 </div>
 
-                <div class="row">
+                <div class="form-group row">
                     <div class="col-md-6 mb-3">
                         <label for="password">비밀번호</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="" value="" required>
-                        <div class="invalid-feedback">
-                            비밀번호를 입력해주세요.
-                        </div>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <small id="passwordHelp" class="form-text text-muted">
+                            영문자/숫자/특수기호를 사용해 8자 이상 20자 이내로 입력하세요.
+                        </small>
+                        <div class="invalid-feedback">비밀번호를 입력해주세요.</div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="password_check">비밀번호 확인</label>
-                        <input type="password" class="form-control" id="password_check" placeholder="" value="" required>
+                        <input type="password" class="form-control" id="password_check" required>
                         <div class="invalid-feedback">
                             비밀번호가 다릅니다.
                         </div>
                     </div>
                 </div>
 
-                <div class="mb-3">
+                <div class="form-group mb-3">
                     <label for="email">이메일</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="example@example.com" required>
                     <div class="invalid-feedback">
@@ -131,12 +100,14 @@
                 </div>
 
                 <hr class="mb-4">
+                <div class="form-group">
                 <div class="custom-control custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="aggrement" required>
                     <label class="custom-control-label" for="aggrement">개인정보 수집 및 이용에 동의합니다.</label>
                 </div>
                 <div class="mb-4"></div>
-                <button class="btn btn-primary btn-lg btn-block" id="join_btn" onclick="signup()" type="button">가입 완료</button>
+                <button class="btn btn-primary btn-lg btn-block" id="join_btn" type="submit" aria-describedby="submitHelp">가입 완료</button>
+                </div>
             </form>
         </div>
     </div>
@@ -144,8 +115,9 @@
         <p class="mb-1">&copy; 2022 WDC</p>
     </footer>
 </div>
+
 <script>
-    /*window.addEventListener('load', () => {
+    window.addEventListener('load', () => {
       const forms = document.getElementsByClassName('validation-form');
 
       Array.prototype.filter.call(forms, (form) => {
@@ -159,8 +131,43 @@
         }, false);
       });
     }, false);
-    */
+
+    $(function() {
+        signup();
+    })
+
+    function signup(){
+        $("#join_btn").click(function(event){
+            event.preventDefault();
+
+            const email = $('#email').val();
+            const username = $('#username').val();
+            const pw = $('#password').val();
+            const name = $('#name').val();
+
+            const member = {
+                "email" : email,
+                "username" : username,
+                "password" : pw,
+                "name" : name
+            };
+
+            $.ajax({
+                type : "POST",
+                url : "/user/signup",
+                data : JSON.stringify(member),
+                contentType: "application/json",
+                success : function(){
+                    alert("회원가입 성공!");
+                    self.location = "/user/login";
+                },
+                error : function(){
+                    alert("회원가입을 실패했습니다.\n입력하신 정보를 다시 확인해주세요.");
+                }
+            });
+        });
+    }
+
   </script>
 </body>
-
 </html>

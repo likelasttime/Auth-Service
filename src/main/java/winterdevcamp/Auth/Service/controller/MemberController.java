@@ -2,7 +2,11 @@ package winterdevcamp.Auth.Service.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
+import winterdevcamp.Auth.Service.controller.validation.SignUpFormValidator;
 import winterdevcamp.Auth.Service.model.Member;
 import winterdevcamp.Auth.Service.model.Response;
 import winterdevcamp.Auth.Service.model.request.*;
@@ -10,6 +14,8 @@ import winterdevcamp.Auth.Service.service.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -30,16 +36,28 @@ public class MemberController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private SignUpFormValidator signUpFormValidator;
+
     @PostMapping("/signup")
-    public Response signUpUser(@RequestBody Member member){
-        try{
-            authService.signUpMember(member);
-            log.info("회원가입 성공");
-            return new Response("success", "회원가입을 성공적으로 완료했습니다.", null);
-        }catch(Exception e){
-            log.info("회원가입 실패");
-            return new Response("error", "회원가입을 하는 도중 오류가 발생했습니다.", null);
+    public ResponseEntity<?> signUpUser(@RequestBody @Valid SignUpForm signUpForm, Errors errors){
+        if(errors.hasErrors()){
+            String errMsg = Objects.requireNonNull(errors.getFieldError()).getDefaultMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errMsg);
         }
+        signUpFormValidator.validate(signUpForm, errors);
+        if(errors.hasErrors()){
+            String errMsg = Objects.requireNonNull(errors.getFieldError()).getDefaultMessage();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errMsg);
+        }
+        try{
+            authService.signUpMember(signUpForm);
+            log.info("회원가입 성공");
+        }catch(Exception e){
+            log.info("회원가입을 하는 도중 오류가 발생했습니다.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입을 하는 도중 오류가 발생했습니다.");
+        }
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/login")

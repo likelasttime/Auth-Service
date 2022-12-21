@@ -15,4 +15,8 @@ public interface MemberRepository extends CrudRepository<Member, Long> {
     List<Member> findAll();
 
     Page<Member> findAllByRoleNotLike(UserRole role, Pageable pageable);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 }

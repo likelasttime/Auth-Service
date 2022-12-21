@@ -1,6 +1,9 @@
 package winterdevcamp.Auth.Service.model.request;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
@@ -8,6 +11,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class SignUpForm {
     @NotBlank
     @Length(min = 2, max = 10)
