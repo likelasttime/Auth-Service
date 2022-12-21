@@ -13,6 +13,8 @@ import winterdevcamp.Auth.Service.repository.MemberRepository;
 import winterdevcamp.Auth.Service.service.AuthService;
 import winterdevcamp.Auth.Service.service.UserService;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @Slf4j
 @SpringBootTest
 public class UserServiceImplTest {
@@ -48,9 +50,22 @@ public class UserServiceImplTest {
 
             // then
             Member after = memberRepository.findByUsername("wjd00");
-            Assertions.assertThat(after.getName()).isEqualTo("개명");
+            assertThat(after.getName()).isEqualTo("개명");
         }catch (Exception e){
             log.info(e.getMessage());
         }
+    }
+
+    @Test
+    public void removeMember(){
+        // given
+        SignUpForm signUpForm = new SignUpForm("자바", "java00", "lovejava", "java00@test.com");
+        authService.signUpMember(signUpForm);
+
+        // when
+        userService.removeMember(signUpForm.getUsername());
+
+        // then
+        assertThat(memberRepository.findAll().size()).isEqualTo(0);
     }
 }
