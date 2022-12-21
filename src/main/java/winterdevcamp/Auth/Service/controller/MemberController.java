@@ -15,6 +15,8 @@ import winterdevcamp.Auth.Service.service.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.security.Principal;
+import java.util.Map;
 import java.util.Objects;
 
 @Slf4j
@@ -174,5 +176,22 @@ public class MemberController {
             response = new Response("error", "사용자 정보 수정에 실패했습니다.", null);
         }
         return response;
+    }
+
+    @PostMapping("/remove")
+    public Response removeMember(Principal principal, @RequestBody Map<String, String> map){
+        Response response;
+        try {
+            String username = principal.getName();
+            if(userService.isPasswordEqual(username, map.get("password"))) {
+                userService.removeMember(username);
+                log.info(username + "님이 탈퇴했습니다.");
+            }else{
+                return new Response("error", "탈퇴에 실패했습니다.", null);
+            }
+        }catch(Exception e){
+            log.info("탈퇴에 실패했습니다.");
+        }
+        return new Response("success", "성공적으로 탈퇴했습니다.", null);
     }
 }

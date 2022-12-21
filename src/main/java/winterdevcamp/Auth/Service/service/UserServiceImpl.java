@@ -22,4 +22,20 @@ public class UserServiceImpl implements UserService{
         String encodePwd = saltUtil.encodePassword(member.getSalt().getSalt(), request.getPassword());
         member.updateInfo(request.getName(), encodePwd);
     }
+
+    @Override
+    public boolean isPasswordEqual(String username, String requestPwd){
+        Member member = memberRepository.findByUsername(username);
+        String salt = member.getSalt().getSalt();
+        String encodeRequest = saltUtil.encodePassword(salt, requestPwd);
+        if(!member.getPassword().equals(encodeRequest)){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void removeMember(String username){
+        memberRepository.deleteByUsername(username);
+    }
 }
