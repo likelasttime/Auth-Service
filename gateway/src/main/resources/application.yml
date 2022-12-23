@@ -1,0 +1,26 @@
+server:
+  port: 5555
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: user-server
+          uri: http://localhost:8011
+          predicates:
+            - Path=/user-server/user/**
+        - id: auth-server
+          uri: http://localhost:8080
+          predicates:
+            - Path=/auth-server/auth/**
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
