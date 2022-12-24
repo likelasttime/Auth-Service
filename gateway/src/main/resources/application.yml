@@ -8,13 +8,19 @@ spring:
     gateway:
       routes:
         - id: user-server
-          uri: http://localhost:8011
+          uri: lb://USER-SERVER
           predicates:
             - Path=/user-server/user/**
+          filters:
+            - CustomAuthFilter
         - id: auth-server
-          uri: http://localhost:8080
+          uri: lb://AUTH-SERVER
           predicates:
             - Path=/auth-server/auth/**
+        - id: front-server
+          uri: lb://FRONT-SERVER
+          predicates:
+            - Path=/**
 
 eureka:
   instance:
@@ -24,3 +30,10 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "gateway"
