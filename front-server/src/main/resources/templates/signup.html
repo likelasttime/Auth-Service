@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<head xmlns:th="http://www.w3.org/1999/xhtml">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+
+    <div th:insert="fragments/common :: head('head')"></div>
+
+    <style>
+    body {
+      min-height: 100vh;
+
+      background: -webkit-gradient(linear, left bottom, right top, from(#92b5db), to(#1d466c));
+      background: -webkit-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
+      background: -moz-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
+      background: -o-linear-gradient(bottom left, #92b5db 0%, #1d466c 100%);
+      background: linear-gradient(to top right, #92b5db 0%, #1d466c 100%);
+    }
+
+    .input-form {
+      max-width: 680px;
+
+      margin-top: 150px;
+      padding: 32px;
+
+      background: #fff;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+      border-radius: 10px;
+      -webkit-box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15);
+      -moz-box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.15)
+    }
+  </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="input-form-backgroud row">
+        <div class="input-form col-md-12 mx-auto">
+            <h4 class="mb-3">회원가입</h4>
+            <form class="validation-form needs-validation" th:action="@{/user-server/user/signup}" th:method="post" novalidate>
+                <div class="row form-group">
+                    <div class="col-md-6 mb-3">
+                        <label for="name">이름</label>
+                        <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
+                               minlength="2" maxlength="10" required>
+                        <small id="nameHelp" class="form-text text-muted">
+                            공백없이 문자와 숫자로만 2자 이상 10자 이내로 입력하세요. 가입후에 변경할 수 있습니다.
+                        </small>
+                        <div class="invalid-feedback">이름을 입력해주세요.</div>
+                    </div>
+
+                    <div class="col-md-6 mb-3 form-group">
+                        <label for="username">아이디</label>
+                        <input type="text" class="form-control" id="username" name="username" aria-describedby="usernameHelp" required>
+                        <small id="usernameHelp" class="form-text text-muted">
+                            공백없이 소문자와 숫자로만 3자 이상 20자 이내로 입력하세요.
+                        </small>
+                        <div class="invalid-feedback">아이디를 입력해주세요.</div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-6 mb-3">
+                        <label for="password">비밀번호</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <small id="passwordHelp" class="form-text text-muted">
+                            영문자/숫자/특수기호를 사용해 8자 이상 20자 이내로 입력하세요.
+                        </small>
+                        <div class="invalid-feedback">비밀번호를 입력해주세요.</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="password_check">비밀번호 확인</label>
+                        <input type="password" class="form-control" id="password_check" required>
+                        <div class="invalid-feedback">
+                            비밀번호가 다릅니다.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="email">이메일</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="example@example.com" required>
+                    <div class="invalid-feedback">
+                        이메일을 입력해주세요.
+                    </div>
+                </div>
+
+                <hr class="mb-4">
+                <div class="form-group">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="aggrement" required>
+                    <label class="custom-control-label" for="aggrement">개인정보 수집 및 이용에 동의합니다.</label>
+                </div>
+                <div class="mb-4"></div>
+                <button class="btn btn-primary btn-lg btn-block" id="join_btn" type="submit" aria-describedby="submitHelp">가입 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer class="my-3 text-center text-small">
+        <p class="mb-1">&copy; 2022 WDC</p>
+    </footer>
+</div>
+
+<script>
+    window.addEventListener('load', () => {
+      const forms = document.getElementsByClassName('validation-form');
+
+      Array.prototype.filter.call(forms, (form) => {
+        form.addEventListener('submit', function (event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+
+    $(function() {
+        signup();
+    })
+
+    function signup(){
+        $("#join_btn").click(function(event){
+            event.preventDefault();
+
+            const email = $('#email').val();
+            const username = $('#username').val();
+            const pw = $('#password').val();
+            const name = $('#name').val();
+
+            const member = {
+                "email" : email,
+                "username" : username,
+                "password" : pw,
+                "name" : name
+            };
+
+            $.ajax({
+                type : "POST",
+                url : "/user-server/user/signup",
+                data : JSON.stringify(member),
+                contentType: "application/json",
+                success : function(){
+                    alert("회원가입 성공!");
+                    self.location = "/login";
+                },
+                error : function(){
+                    alert("회원가입을 실패했습니다.\n입력하신 정보를 다시 확인해주세요.");
+                }
+            });
+        });
+    }
+
+  </script>
+</body>
+</html>
