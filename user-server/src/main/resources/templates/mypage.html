@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>My Page</title>
+
+    <div th:insert="fragments/common :: head('head')"></div>
+
+    <script>
+        function updateInfo(){
+            const info = {
+                name : $('#name').val(),
+                username : $('#username').val(),
+                password : $('#password').val()
+            };
+
+            $.ajax({
+                type : "PUT",
+                url : "/user-server/user/info",
+                headers : {
+                    "Content-Type" : "application/json",
+                    "X-HTTP-Method-Override" : "PUT"
+                },
+                dataType : "json",
+                data : JSON.stringify(info),
+                success : function(result){
+                    console.log("result : ", result);
+                    if(result.response == "success"){
+                        alert(result.message);
+                        self.location = "/";
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+    </script>
+
+    <style>
+        .container{
+            margin-top:150px;
+        }
+
+        image{
+            weight:100px;
+            height:100px;
+
+        }
+    </style>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" th:replace="fragments/common :: menu('nav')">
+</nav>
+<div class="container">
+    <div class="input-form-backgroud row">
+        <div class="input-form col-md-12 mx-auto">
+            <h4 class="mb-3 ml-3">My Page</h4>
+
+            <form class="validation-form" modelAttribute="member" novalidate>
+                <img class="mt-1" style="float:right;width:500px;height:400px;" src="https://gloomy.co.kr/web/product/big/202205/c967cd199961c15eae30b048a29180ad.jpg">
+                <div class="col-md-6 mb-3">
+                    <label for="name">이름</label>
+                    <input type="text" class="form-control" id="name" name="name" th:value="${member.name}" required>
+                    <div class="invalid-feedback">
+                        이름을 입력해주세요.
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="username">아이디</label>
+                    <input type="text" class="form-control" id="username" name="username" th:value="${member.username}" disabled>
+                    <div class="invalid-feedback">
+                        아이디를 입력해주세요.
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="email">이메일</label>
+                    <input type="email" class="form-control" id="email" name="email" th:value="${member.email}" disabled>
+                    <div class="invalid-feedback">
+                        이메일을 입력해주세요.
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="password">비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="" value="" required>
+                    <div class="invalid-feedback">
+                        비밀번호를 입력해주세요.
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="password_check">비밀번호 확인</label>
+                    <input type="password" class="form-control" id="password_check" placeholder="" value="" required>
+                    <div class="invalid-feedback">
+                        비밀번호가 다릅니다.
+                    </div>
+                </div>
+
+                <div class="mb-4"></div>
+                <button class="btn btn-primary ml-3" id="update_btn" onclick="updateInfo()" type="button">수정</button>
+           </form>
+        </div>
+    </div>
+</body>
+</html>
