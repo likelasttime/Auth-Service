@@ -21,6 +21,8 @@ spring:
           uri: lb://FRONT-SERVER
           predicates:
             - Path=/**
+  jwt:
+    secret: happilyeverafterhappilyeverafter
 
 eureka:
   instance:
@@ -30,6 +32,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+
 
 management:
   endpoints:
