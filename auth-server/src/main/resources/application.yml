@@ -1,0 +1,36 @@
+server:
+  port: 8022
+
+spring:
+  application:
+    name: auth-server
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 비밀번호
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  jwt:
+    secret: happilyeverafterhappilyeverafter
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
