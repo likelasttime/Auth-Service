@@ -13,7 +13,7 @@ Monolithic 아키텍처(📁 src)
     - /src/test/java/winterdevcamp/Auth/Service/
     - 테스트 코드에서 보완점을 알고 싶습니다.
 3. /gateway/src/main/java/com/example/gateway/filter/CustomAuthFilter.java에서 apply 메소드
-    - Header에서 Authorization을 가져오는 대신 Cookie에서 AccessToken을 가져오도록 구현했습니다. Authorization에 토큰을 넣는 게 더 나을까요?   
+    - Header에서 Authorization을 가져오는 대신 Cookie에서 AccessToken을 가져오도록 구현했습니다. 헤더의 Authorization에 토큰을 넣는 게 더 나을까요? ➡️  Authorization에 토큰을 넣는 방식으로 바꿀 예정입니다.  
 4. URL 설계
     - /user-server/user/signup 이런 식으로 /인스턴스명/행위의 대상/행위로 했습니다.
       - 외부에 구조가 다 노출되는 것 같은데 route 하기 전에 임의의 path 설정할까요?
@@ -27,7 +27,6 @@ Monolithic 아키텍처(📁 src)
 ### 궁금한 점  
 1. PK를 auto-increment로 해서 사용하면 보안 측면에서 문제가 있다는 것을 알고 있습니다. UUIDv4를 사용하는 글을 읽었는데 실제로는 어떤 방법을 주로 사용하는지 궁금합니다.  
 2. BCrypt는 RAM에 많은 양을 요구한다는 말이 있던데 그러면 자주 사용되는 방식이 무엇인가요?
-2. AccessToken, RefreshToken은 보통 만료 기간을 어떻게 정하나요?
 3. 저는 다 구현한 후에 MSA를 적용해봤는데 처음부터 MSA 구조로 시작해야 하나요?
 4. 팀 프로젝트 때 Spring Data JPA는 가급적 사용하지 말라고 했는데 MyBatis 쓰면 되나요?
 5. 회원 탈퇴를 구현할 때 아예 삭제해도 되나요? 서비스를 사용하다 보면 다음에 같은 계정으로 다시 가입할 수 없다는 방식을 많이 봤습니다. 삭제된 회원은 따로 보관을 해야 하나요?
