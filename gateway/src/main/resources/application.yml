@@ -6,13 +6,42 @@ spring:
     name: gateway
   cloud:
     gateway:
+      globalcors:
+        corsConfigureations:
+          '[/**]':
+            alowedOrigins: "http://localhost:8333"
+            allow-credentials: true
+            allowedHeaders: '*'
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+      default-filters:
+        - DedupeResponseHeader=Access-control-Allow-Orign Access-Control-Allow-Credentials
+        - name: GlobalFilter
+          args:
+            baseMessage: Spring Cloud Gateway Global Filter
+            preLogger: true
+            postLogger: true
       routes:
-        - id: user-server
+        - id: user-server-admin
+          uri: lb://USER-SERVER
+          predicates:
+            - Path=/user-server/admin/**
+          filters:
+            - CustomAuthFilter
+        - id: user-server-user
           uri: lb://USER-SERVER
           predicates:
             - Path=/user-server/user/**
           filters:
             - CustomAuthFilter
+        - id: user-server-auth
+          uri: lb://USER-SERVER
+          predicates:
+            - Path=/user-server/auth/**
         - id: auth-server
           uri: lb://AUTH-SERVER
           predicates:
@@ -33,10 +62,10 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
-
-
 management:
   endpoints:
+    health:
+      show-details: always
     web:
       exposure:
         include:
