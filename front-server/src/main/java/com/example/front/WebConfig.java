@@ -13,13 +13,12 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addViewController("/").setViewName("index.html");
         registry.addViewController("/authentication").setViewName("authentication.html");
         registry.addViewController("/login").setViewName("login.html");
-        registry.addViewController("/passwordMail").setViewName("passwordMail.html");
+        registry.addViewController("/password/{key}").setViewName("passwordMail.html");
         registry.addViewController("/signup").setViewName("signup.html");
         registry.addViewController("/updatePassword").setViewName("updatePassword.html");
-        registry.addViewController("/verify").setViewName("verify.html");
+        registry.addViewController("/verify/{key}").setViewName("verify.html");
         registry.addViewController("/mypage").setViewName("mypage.html");
         registry.addViewController("/manage").setViewName("/manage/members.html");
-
     }
 
     @Override

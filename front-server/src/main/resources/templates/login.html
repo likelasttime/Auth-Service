@@ -28,8 +28,12 @@
                 success : function(result){
                     console.log("result : ", result);
                     if(result.response == "success"){
+                        console.log("로그인 성공");
+                        console.log(result.data);
+                        localStorage.setItem('Authorization', result.data);
+                        localStorage.setItem('username', $("#username").val());
                         if(result.message == "이메일 인증이 필요합니다."){
-                            self.location = "/user-server/user/verify";
+                            self.location = "/authentication";
                         }else{
                             self.location = "/";
                         }

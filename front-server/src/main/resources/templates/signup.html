@@ -143,15 +143,16 @@
 
             $.ajax({
                 type : "POST",
-                url : "/user-server/user/signup",
+                url : "/user-server/auth/signup",
                 data : JSON.stringify(member),
                 contentType: "application/json",
-                success : function(){
-                    alert("회원가입 성공!");
-                    self.location = "/login";
-                },
-                error : function(){
-                    alert("회원가입을 실패했습니다.\n입력하신 정보를 다시 확인해주세요.");
+                success : function(result){
+                    if(result.response == "success"){
+                        alert("회원가입 성공!");
+                        self.location = "/login";
+                    }else{
+                        alert(result.message);
+                    }
                 }
             });
         });

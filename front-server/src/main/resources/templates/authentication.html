@@ -1,22 +1,11 @@
 <!DOCTYPE html>
-<head xmlns:th="http://www.w3.org/1999/xhtml">
+<head lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>이메일 인증</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.1/font/bootstrap-icons.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-
-    <!-- javascript -->
-    <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <div th:insert="fragments/common :: head('head')"></div>
 
     <style>
         .container {
@@ -24,38 +13,63 @@
         }
     </style>
 
-    <script th:inline="javascript">
+    <script>
         function send_mail(){
-            const requestVerifyEmail = {username : [[${username}]]};
+            const token = localStorage.getItem('Authorization');
+            const username = localStorage.getItem('username');
+            const requestVerifyEmail = {username : username};
             $.ajax({
-            type : "POST",
-            url : "/user-server/user/verify",
-            headers : {
-                "Content-Type" : "application/json",
-                "X-HTTP-Method-Override" : "POST"
-            },
-            dataType : "json",
-            data : JSON.stringify(requestVerifyEmail),
-            success : function(result){
-                console.log("result : ", result);
-                if(result.response == "success"){
-                    alert(result.message);
-                    self.location = "/";
-                }else{
-                    alert(result.message);
+                type : "POST",
+                url : "/user-server/user/verify",
+                headers : {
+                    "Authorization" : 'Bearer ' + token,
+                    "Content-Type" : "application/json",
+                    "X-HTTP-Method-Override" : "POST"
+                },
+                dataType : "json",
+                data : JSON.stringify(requestVerifyEmail),
+                success : function(result){
+                    console.log("result : ", result);
+                    if(result.response == "success"){
+                        alert(result.message);
+                    }else{
+                        alert(result.message);
+                    }
                 }
-            }
             });
         }
 
-        send_mail();
+        function get_email(){
+            const token = localStorage.getItem('Authorization');
+            const username = localStorage.getItem('username');
+            const requestVerifyEmail = {username : username};
+            $.ajax({
+                type : "GET",
+                url : "/user-server/user/email/" + username,
+                headers : {
+                    "Authorization" : 'Bearer ' + token
+                },
+                dataType : "json",
+                success : function(result){
+                    console.log("result : ", result);
+                    if(result.response == "success"){
+                        document.getElementById("email").innerHTML=result.data;
+                        send_mail();
+                    }else{
+                        alert(result.message);
+                    }
+                }
+            });
+        }
+
+        get_email();
     </script>
 </head>
 <body>
 <div class="container">
     <h2 class="text-center font-weight-bold">이메일 인증</h2>
     <div class="text-center mt-4">
-        <h5>인증 메일이 <a th:text="${email}"></a>(으)로 전송되었습니다.</h5>
+        <h5>인증 메일이 <a id="email"></a>(으)로 전송되었습니다.</h5>
         <h5>받으신 이메일을 열어 버튼을 클릭하면 가입이 완료됩니다.</h5>
     </div>
     <div class="text-center mt-5">
