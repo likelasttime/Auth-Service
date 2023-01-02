@@ -2,72 +2,73 @@ package com.example.userserver.controller;
 
 import com.example.userserver.model.Member;
 import com.example.userserver.model.Response;
-import com.example.userserver.model.request.RequestChangePassword1;
-import com.example.userserver.model.request.RequestChangePassword2;
+import com.example.userserver.model.SecurityMember;
+import com.example.userserver.model.UpdateMemberResponse;
+import com.example.userserver.model.request.RequestVerifyEmail;
 import com.example.userserver.model.request.UpdateMemberRequest;
+import com.example.userserver.service.SignUpService;
 import com.example.userserver.service.UserService;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.Map;
 
 @Slf4j
-@RequestMapping(value="/user-server/user/")
+@RequestMapping(value="/user-server/user")
 @RequiredArgsConstructor
 @RestController
 public class UserController {
+    private final SignUpService signUpService;
     private final UserService userService;
 
-    @PostMapping("/password/{key}")
-    public Response isPasswordUUIdValidate(@PathVariable String key){
+    @GetMapping("/email/{username}")
+    public Response getEmail(@PathVariable String username){
         Response response;
         try{
-            if(userService.isPasswordUuidValidate(key))
-                response = new Response("success", "정상적인 접근입니다.", null);
-            else
-                response = new Response("error", "유효하지 않은 Key 값입니다.", null);
-        }catch (Exception e){
-            response = new Response("error", "유효하지 않은 key 값입니다.", null);
+            Member member = userService.findByUsername(username);
+            response = new Response("success", "사용자의 이메일을 가져왔습니다.", member.getEmail());
+        }catch(NotFoundException e){
+            response = new Response("error", e.getMessage(), null);
         }
         return response;
     }
 
-    @PostMapping("/password")
-    public Response requestChangePassword(@RequestBody RequestChangePassword1 requestChangePassword1){
+    @PostMapping("/verify")
+    public Response verify(@RequestBody RequestVerifyEmail requestVerifyEmail){
         Response response;
         String username = "";
         try{
-            username = requestChangePassword1.getUsername();
+            username = requestVerifyEmail.getUsername();
             Member member = userService.findByUsername(username);
-            if(!member.getEmail().equals(requestChangePassword1.getEmail())) throw new NoSuchFieldException("");
-            userService.requestChangePassword(member);
-            log.info("성공적으로 " + username + "의 비밀번호 변경요청을 수행");
-            response = new Response("success", "성공적으로 사용자의 비밀번호 변경요청을 수행했습니다.", null);
-        }catch(NoSuchFieldException e){
-            log.info("사용자 정보를 조회할 수 없습니다");
-            response = new Response("error", "사용자 정보를 조회할 수 없습니다.", null);
-        }catch(Exception e){
-            log.info(username + " 비밀번호 변경요청을 수행할 수 없습니다");
-            response = new Response("error", "비밀번호 변경 요청을 할 수 없습니다.", null);
+            signUpService.sendVerificationMail(member);
+            log.info(username + "에 인증메일 발송");
+            response = new Response("success", "성공적으로 인증메일을 보냈습니다.", null);
+        }catch(Exception exception){
+            log.info(username + "에 인증메일 발송 실패");
+            response = new Response("error", "인증메일을 보내는데 문제가 발생했습니다.", exception);
         }
         return response;
     }
 
-    @PutMapping("/password")
-    public Response changePassword(@RequestBody RequestChangePassword2 requestChangePassword2){
+    @GetMapping("/info")
+    public Response getInfo(){
         Response response;
-        String username = "";
         try{
-            username = requestChangePassword2.getUsername();
+            SecurityMember securityMember = (SecurityMember) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            String username = securityMember.getUsername();
             Member member = userService.findByUsername(username);
-            userService.changePassword(member, requestChangePassword2.getPassword());
-            log.info("성공적으로" + username + "의 비밀번호를 변경했습니다.");
-            response = new Response("success", "성공적으로 사용자의 비밀번호를 변경했습니다.", null);
+            UpdateMemberResponse updateMemberResponse = UpdateMemberResponse.builder()
+                    .name(member.getName())
+                    .email(member.getEmail())
+                    .username(username)
+                    .build();
+            response = new Response("success", username + "의 정보를 성공적으로 가져왔습니다.", updateMemberResponse);
         }catch(Exception e){
-            log.info(username + "의 비밀번호를 변경하지 못했습니다.");
-            response = new Response("error", "사용자의 비밀번호를 변경할 수 없습니다.", null);
+            log.info("사용자의 정보를 가져오지 못했습니다.");
+            response = new Response("error", "사용자의 정보를 가져오지 못했습니다.", null);
         }
         return response;
     }

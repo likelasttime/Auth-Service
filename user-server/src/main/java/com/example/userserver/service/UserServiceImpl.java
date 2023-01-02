@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void requestChangePassword(Member member) throws NotFoundException{
-        String CHANGE_PASSWORD_LINK = "http://localhost:5555/user-server/user/password/";
+        String CHANGE_PASSWORD_LINK = "http://localhost:5555/password/";
         if(member == null) throw new NotFoundException("멤버가 조회되지 않음");
         String key = UUID.randomUUID().toString();
         redisUtil.setDataExpire(key, member.getUsername(), 60 * 30L);

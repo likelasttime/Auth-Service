@@ -23,6 +23,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         return http
                 .httpBasic().disable()
+                .cors().and()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -31,11 +32,8 @@ public class SecurityConfig {
                 .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user-server/auth/**").hasRole("ADMIN")
-                .antMatchers("/user-server/user/signup").permitAll()
-                .antMatchers("/user-server/user/password/*").permitAll()
-                .antMatchers("/user-server/user/verify/*").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/user-server/admin/**").hasRole("ADMIN")
+                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

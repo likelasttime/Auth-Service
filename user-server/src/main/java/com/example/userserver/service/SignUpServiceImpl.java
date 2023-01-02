@@ -47,11 +47,12 @@ public class SignUpServiceImpl implements SignUpService{
     @Override
     public void modifyUserRole(Member member, UserRole userRole){
         member.updateRole(userRole);
+        memberRepository.save(member);
     }
 
     @Override
     public void sendVerificationMail(Member member) throws NotFoundException {
-        String VERIFICATION_LINK = "http://localhost:8080/user/verify/";
+        String VERIFICATION_LINK = "http://localhost:5555/verify/";
         if(member == null) throw new NotFoundException("멤버가 조회되지 않음");
         UUID uuid = UUID.randomUUID();
         redisUtil.setDataExpire(uuid.toString(), member.getUsername(), 60 * 30L);
