@@ -21,7 +21,7 @@ import java.util.Objects;
 
 @Slf4j
 @RestController
-@RequestMapping("/user")
+@RequestMapping(value="/user")
 public class MemberController {
     @Autowired
     private AuthService authService;

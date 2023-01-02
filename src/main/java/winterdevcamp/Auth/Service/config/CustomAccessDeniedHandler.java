@@ -34,7 +34,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         SecurityMember member = (SecurityMember)authentication.getPrincipal();
         Collection<GrantedAuthority> authorities = member.getAuthorities();
 
-        if(hasRole(authorities,UserRole.ROLE_NOT_PERMITTED.name())){
+        if(hasRole(authorities, UserRole.ROLE_NOT_PERMITTED.name())){
             res.setMessage("사용자 인증메일을 받지 않았습니다.");
         }
 

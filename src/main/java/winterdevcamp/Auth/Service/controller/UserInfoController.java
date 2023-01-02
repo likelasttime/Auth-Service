@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import winterdevcamp.Auth.Service.model.Member;
 import winterdevcamp.Auth.Service.model.UserInfoResponse;
@@ -18,6 +19,7 @@ import java.util.Objects;
 
 @Slf4j
 @RestController
+@RequestMapping
 public class UserInfoController {
     @Autowired
     private UserInfoService userInfoService;

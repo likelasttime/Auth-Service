@@ -26,6 +26,8 @@
                 url: "http://localhost:8080/api/user?page=" + page + "&size=" + size + "&sortDirection=" + direction + "&sortColumn=" + column,
                 type: "GET",
                 dataType: 'json',
+                Origin: location.origin,
+                credentials: 'include',
                 headers: {"Authorization": 'Bearer ' + accessToken},
                 success: function(result) {
                     addUsersInfoAll(result);

@@ -38,6 +38,10 @@ public class JwtUtil {
                 .getBody();
     }
 
+    public Date getExpiredTime(String token) {
+        return extractAllClaims(token).getExpiration();
+    }
+
     public String getUsername(String token){
         return extractAllClaims(token).get("username", String.class);
     }

@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import winterdevcamp.Auth.Service.model.Member;
 import winterdevcamp.Auth.Service.model.UpdateMemberResponse;
 import winterdevcamp.Auth.Service.service.AuthService;
@@ -15,6 +16,7 @@ import winterdevcamp.Auth.Service.service.AuthService;
 import java.security.Principal;
 
 @Controller
+@RequestMapping
 @Slf4j
 public class HomeController {
     @Autowired
