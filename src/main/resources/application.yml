@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/auth?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: ENC(vm35yXKA3yKOzhJgL2s/eQ==)
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  jwt:
+    secret: happilyeverafterhappilyeverafter
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ENC(EIs+7Sy40S3UUXIOs4bp6iA/JBEJNEvZNzKgwSUn8ZY=)
+    password: ENC(8c2doZRlFv6JAO3wDI8Niquuh37tZqcTjGo/YYoagtw=)
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
