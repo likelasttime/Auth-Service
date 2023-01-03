@@ -5,6 +5,11 @@ Monolithic 아키텍처(📁 src)
 
 <br>
 
+🟥 MSA 인증 서버 실행 영상  
+https://youtu.be/ARxAACi77Lw  
+
+<br>
+
 ### 코드 중 확인받고 싶은 부분
 1. MSA 아키텍처
   - 더 나눠야 하거나 잘못 나눠진 부분이 있나요?  
@@ -13,7 +18,7 @@ Monolithic 아키텍처(📁 src)
     - /src/test/java/winterdevcamp/Auth/Service/
     - 테스트 코드에서 보완점을 알고 싶습니다.
 3. /gateway/src/main/java/com/example/gateway/filter/CustomAuthFilter.java에서 apply 메소드
-    - Header에서 Authorization을 가져오는 대신 Cookie에서 AccessToken을 가져오도록 구현했습니다. 헤더의 Authorization에 토큰을 넣는 게 더 나을까요? ➡️  Authorization에 토큰을 넣는 방식으로 바꿀 예정입니다.  
+    - Header에서 Authorization을 가져오도록 구현했습니다. 프런트엔드에서 로그인 시 localStorage에 AccessToken을 저장하고, 인증이 필요할 때 Header에 "Authorization" : "Bearer " + AccessToken을 담아서 보냅니다.  
 4. URL 설계
     - /user-server/user/signup 이런 식으로 /인스턴스명/행위의 대상/행위로 했습니다.
       - 외부에 구조가 다 노출되는 것 같은데 route 하기 전에 임의의 path 설정할까요?
@@ -109,12 +114,13 @@ Monolithic 아키텍처(📁 src)
 |Method|URI|설명|
 |---|---|----|
 |POST|/auth-server/auth/login|로그인|
-|POST|/user-server/user/signup |회원 가입|
-|POST|/user-server/user/verify|인증 메일 전송|
-|POST|/user-server/user/verify/{key}|인증 메일 검증|
-|PUT|/user-server/user/password|비밀번호 변경|
-|POST|/user-server/user/password/{key}|새 비밀번호 설정 URL 검증|
-|POST|/user-server/user/password|새 비밀번호 설정 메일 발송|
+|POST|/user-server/auth/signup |회원 가입|
+|POST|/user-server/auth/verify|인증 메일 전송|
+|POST|/user-server/auth/verify/{key}|인증 메일 검증|
+|PUT|/user-server/auth/password|비밀번호 변경|
+|POST|/user-server/auth/password/{key}|새 비밀번호 설정 URL 검증|
+|POST|/user-server/auth/password|새 비밀번호 설정 메일 발송|
+|GET|/user-server/user/email/{username}|사용자가 가입한 이메일 찾기|
 |PUT|/user-server/user/info|개인 정보 수정|
 |POST|/user-server/user/remove|탈퇴|
 |GET|/user-server/admin/manage|사용자 관리(조회)|
