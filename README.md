@@ -10,38 +10,6 @@ https://youtu.be/ARxAACi77Lw
 
 <br>
 
-### 코드 중 확인받고 싶은 부분
-1. MSA 아키텍처
-  - 더 나눠야 하거나 잘못 나눠진 부분이 있나요?  
-  - 프런트엔드만 서버를 따로 두었는데 관련 파일이 별로 없으면 생성하지 않는 게 나을까요?  
-2. 테스트 코드  
-    - /src/test/java/winterdevcamp/Auth/Service/
-    - 테스트 코드에서 보완점을 알고 싶습니다.
-3. /gateway/src/main/java/com/example/gateway/filter/CustomAuthFilter.java에서 apply 메소드
-    - Header에서 Authorization을 가져오도록 구현했습니다. 프런트엔드에서 로그인 시 localStorage에 AccessToken을 저장하고, 인증이 필요할 때 Header에 "Authorization" : "Bearer " + AccessToken을 담아서 보냅니다.  
-4. URL 설계
-    - /user-server/user/signup 이런 식으로 /인스턴스명/행위의 대상/행위로 했습니다.
-      - 외부에 구조가 다 노출되는 것 같은데 route 하기 전에 임의의 path 설정할까요?
-5. /src/main/java/winterdevcamp/Auth/Service/controller/HomeController.java
-    - updateInfo 메소드
-        - 단순히 view만 반환하지 않고 개인 정보까지 설정해서 보내고 있습니다. MSA에서는 문제가 생기네요. 두 기능을 분리하는 게 더 옳은가요?
-          - GET을 요청하면 view만 리턴하고 비동기로 개인 정보를 가져와서 출력하는 방법을 생각하고 있습니다.
-
-<br>
-
-### 궁금한 점  
-1. PK를 auto-increment로 해서 사용하면 보안 측면에서 문제가 있다는 것을 알고 있습니다. UUIDv4를 사용하는 글을 읽었는데 실제로는 어떤 방법을 주로 사용하는지 궁금합니다.  
-2. BCrypt는 RAM에 많은 양을 요구한다는 말이 있던데 그러면 자주 사용되는 방식이 무엇인가요?
-3. 저는 다 구현한 후에 MSA를 적용해봤는데 처음부터 MSA 구조로 시작해야 하나요?
-4. 팀 프로젝트 때 Spring Data JPA는 가급적 사용하지 말라고 했는데 MyBatis 쓰면 되나요?
-5. 회원 탈퇴를 구현할 때 아예 삭제해도 되나요? 서비스를 사용하다 보면 다음에 같은 계정으로 다시 가입할 수 없다는 방식을 많이 봤습니다. 삭제된 회원은 따로 보관을 해야 하나요?
-6. 회원 정보를 수정할 때 횟수에 제한이 있도록 구현을 하나요?
-7. 유저 관리처럼 관리자가 사용할 수 있는 기능은 권한이 없는 사용자에게 안 보여지는 게 나을까요? 아니면 접근을 시도하면 안 된다는 알림을 띄울까요?
-8. Member 테이블에 언제 최종 접근했는지 알 수 있는 필드를 추가한다면 로그인 할때마다 갱신하나요?  
-9. 권한을 0==가입신청, 1==이메일인증, 2==정회원, 3==게시판 관리자처럼 나타내는 것을 봤습니다. 저는 ROLE_USER와 같이 사용하고 있는데 두 가지 방식 다 테이블 필드에 들어가야 하나요? 아니면 선택인가요?
-
-<br>  
-
 ### 기술스택
 🟧 <b>Backend</b>  
 - Java 11  
