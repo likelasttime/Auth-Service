@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -53,8 +54,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
             if(username != null){
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                String isLogout = redisUtil.getData(jwt);
 
-                if(jwtUtil.validateToken(jwt, userDetails)){
+                if(ObjectUtils.isEmpty(isLogout) && jwtUtil.validateToken(jwt, userDetails)){
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

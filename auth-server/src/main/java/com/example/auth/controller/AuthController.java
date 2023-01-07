@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -46,5 +47,12 @@ public class AuthController {
         }catch(Exception e){
             return new Response("error", "로그인에 실패했습니다.", e.getMessage());
         }
+    }
+
+    @PostMapping("/logout")
+    public Response logout(HttpServletRequest request, @RequestBody Map<String, String> map) {
+        String accessToken = cookieUtil.getCookie(request, "accessToken").getValue();
+        String refreshToken = cookieUtil.getCookie(request, "refreshToken").getValue();
+        return authService.logout(map.get("username"), accessToken, refreshToken);
     }
 }
