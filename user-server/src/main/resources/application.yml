@@ -2,6 +2,9 @@ server:
   port: 8011
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   application:
     name: user-server
   datasource:
@@ -30,6 +33,14 @@ spring:
           auth: true
           starttls:
             enable: true
+  kafka:
+    consumer:
+      group-id: my-group
+    bootstrap-servers: localhost:9092
+
+kafka:
+  topics:
+    test: mail
 
 eureka:
   instance:
