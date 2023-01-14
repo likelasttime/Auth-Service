@@ -2,6 +2,9 @@ server:
   port: 8011
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   application:
     name: user-server
   datasource:
