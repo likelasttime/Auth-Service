@@ -8,6 +8,9 @@ Monolithic 아키텍처(📁 src)
 🟥 MSA 인증 서버 실행 영상  
 https://youtu.be/ARxAACi77Lw  
 
+📘기록 일지  
+https://desert-echidna-283.notion.site/Auth-Service-b3dd5d28044541e6a8e520f7d1f1abaa  
+
 <br>
 
 ### 기술스택
