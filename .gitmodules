@@ -1,0 +1,3 @@
+[submodule "Auth-service-sub"]
+	path = Auth-service-sub
+	url = https://github.com/likelasttime/Auth-service-sub.git
