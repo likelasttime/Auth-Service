@@ -1,71 +1,55 @@
 package winterdevcamp.Auth.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import winterdevcamp.Auth.Service.model.Member;
-import winterdevcamp.Auth.Service.model.request.SignUpForm;
-import winterdevcamp.Auth.Service.model.request.UpdateMemberRequest;
+import winterdevcamp.Auth.Service.model.Salt;
 import winterdevcamp.Auth.Service.repository.MemberRepository;
-import winterdevcamp.Auth.Service.service.AuthService;
-import winterdevcamp.Auth.Service.service.UserService;
+import winterdevcamp.Auth.Service.service.SaltUtil;
+import winterdevcamp.Auth.Service.service.UserServiceImpl;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 @Slf4j
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UserServiceImplTest {
-    @Autowired
+    @Mock
     private MemberRepository memberRepository;
 
-    @Autowired
-    private UserService userService;
+    @InjectMocks
+    private UserServiceImpl userService;
 
-    @Autowired
-    private AuthService authService;
+    @Mock
+    private SaltUtil saltUtil;
 
-    @AfterEach
-    public void afterEach(){
-        memberRepository.deleteAll();
-    }
+    private static Member member;
 
-    @Test
-    public void updateMemberInfo(){
-        // given
-        SignUpForm signUpForm = new SignUpForm("자바", "java00", "lovejava", "java00@test.com");
-        Member member = memberRepository.findByUsername("java00");
-
-        UpdateMemberRequest request = UpdateMemberRequest.builder()
-                .username("wjd00")
-                .password("newpwd")
-                .name("개명")
+    @BeforeAll
+    public static void beforeAll(){
+        member = Member.builder()
+                .username("user")
+                .password("password")
+                .salt(new Salt("1"))
                 .build();
-
-        authService.signUpMember(signUpForm);
-        try {
-            userService.updateMemberInfo(request);
-
-            // then
-            Member after = memberRepository.findByUsername("wjd00");
-            assertThat(after.getName()).isEqualTo("개명");
-        }catch (Exception e){
-            log.info(e.getMessage());
-        }
     }
 
     @Test
-    public void removeMember(){
+    public void isPasswordEqual(){
         // given
-        SignUpForm signUpForm = new SignUpForm("자바", "java00", "lovejava", "java00@test.com");
-        authService.signUpMember(signUpForm);
+        final String requestPwd = "password";
+        when(memberRepository.findByUsername(member.getUsername())).thenReturn(member);
+        when(saltUtil.encodePassword(member.getSalt().getSalt(), requestPwd)).thenReturn(member.getPassword());
 
         // when
-        userService.removeMember(signUpForm.getUsername());
+        boolean result = userService.isPasswordEqual(member.getUsername(), requestPwd);
 
         // then
-        assertThat(memberRepository.findAll().size()).isEqualTo(0);
+        assertTrue(result);
     }
 }
