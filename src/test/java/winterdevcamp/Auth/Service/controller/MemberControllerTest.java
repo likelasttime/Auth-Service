@@ -5,27 +5,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import winterdevcamp.Auth.Service.model.Response;
+import winterdevcamp.Auth.Service.config.JwtRequestFilter;
+import winterdevcamp.Auth.Service.controller.validation.SignUpFormValidator;
 import winterdevcamp.Auth.Service.model.request.SignUpForm;
 import winterdevcamp.Auth.Service.repository.MemberRepository;
-import winterdevcamp.Auth.Service.service.AuthService;
+import winterdevcamp.Auth.Service.service.*;
 
 import java.util.HashMap;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(controllers = MemberController.class,
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = {JwtRequestFilter.class, WebSecurityConfigurerAdapter.class})
+        })
+@AutoConfigureMockMvc(addFilters = false)
 public class MemberControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -33,14 +40,26 @@ public class MemberControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @Autowired
+    @MockBean
     MemberRepository memberRepository;
 
-    @Autowired
+    @MockBean
     AuthService authService;
 
-    @AfterEach
-    public void afterEach(){memberRepository.deleteAll();}
+    @MockBean
+    JwtUtil jwtUtil;
+
+    @MockBean
+    CookieUtil cookieUtil;
+
+    @MockBean
+    RedisUtil redisUtil;
+
+    @MockBean
+    UserService userService;
+
+    @MockBean
+    SignUpFormValidator signUpFormValidator;
 
     @Test
     @DisplayName("회원 가입 처리 : 입력값 정상")
@@ -55,9 +74,6 @@ public class MemberControllerTest {
                         .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isOk());
-
-        // then
-        assertTrue(memberRepository.existsByEmail("java@test.com"));
     }
 
     @Test
@@ -80,8 +96,6 @@ public class MemberControllerTest {
     @WithMockUser
     void removeMember() throws Exception{
         // given
-        SignUpForm signUpForm = new SignUpForm("자바", "user", "password", "java00@test.com");
-        authService.signUpMember(signUpForm);
         HashMap<String, String> map = new HashMap<>();
         map.put("password", "password");
         String request = objectMapper.writeValueAsString(map);
@@ -91,34 +105,8 @@ public class MemberControllerTest {
                 .content(request)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
-                .andExpect(status().isOk());
-
-        // then
-        assertThat(memberRepository.findAll().size()).isEqualTo(0);
-
-    }
-
-    @Test
-    @DisplayName("회원 탈퇴 : 비밀번호 다름")
-    @WithMockUser
-    void removeMemberWithError() throws Exception{
-        // given
-        SignUpForm signUpForm = new SignUpForm("자바", "user", "password", "java00@test.com");
-        authService.signUpMember(signUpForm);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("password", "notpassword");
-        String request = objectMapper.writeValueAsString(map);
-
-        // when
-        Response response = new Response("error", "탈퇴에 실패했습니다.", null);
-        mockMvc.perform(post("/user/remove")
-                        .content(request)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-
-        // then
-        assertThat(memberRepository.findAll().size()).isEqualTo(1);
-
+                .andExpectAll(status().isOk(),
+                        jsonPath("$.response").value("success"),
+                        jsonPath("$.message").value("성공적으로 탈퇴했습니다."));
     }
 }

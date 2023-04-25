@@ -3,29 +3,36 @@ package winterdevcamp.Auth.Service;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import winterdevcamp.Auth.Service.model.Member;
-import winterdevcamp.Auth.Service.model.Salt;
 import winterdevcamp.Auth.Service.model.UserRole;
 import winterdevcamp.Auth.Service.repository.MemberRepository;
 import winterdevcamp.Auth.Service.service.SaltUtil;
-import winterdevcamp.Auth.Service.service.UserInfoService;
+import winterdevcamp.Auth.Service.service.UserInfoServiceImpl;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @Slf4j
+@ExtendWith(MockitoExtension.class)
 public class UserInfoServiceImplTest {
-    @Autowired
-    private UserInfoService userInfoService;
+    @InjectMocks
+    private UserInfoServiceImpl userInfoService;
 
-    @Autowired
+    @Mock
     private SaltUtil saltUtil;
 
-    @Autowired
+    @Mock
     private MemberRepository memberRepository;
 
     @AfterEach
@@ -34,19 +41,18 @@ public class UserInfoServiceImplTest {
     @Test
     public void getUsersInfo(){
         // given
-        String salt = saltUtil.genSalt();
-        Member member1 = Member.builder()
-                .username("wjd00")
-                .name("정")
-                .email("test@gmail.com")
-                .role(UserRole.ROLE_USER)
-                .salt(Salt.builder().salt(salt).build())
-                .password(saltUtil.encodePassword(salt, "password"))
+        Pageable pageable = PageRequest.of(0, 5);
+        Member member = Member.builder()
+                .username("user")
+                .password("password")
                 .build();
-        memberRepository.save(member1);
+        List<Member> members = new ArrayList<>();
+        members.add(member);
+        when(memberRepository.findAllByRoleNotLike(UserRole.ROLE_NOT_PERMITTED, pageable))
+                .thenReturn(new PageImpl<Member>(members));
 
         // when
-        Page<Member> result = userInfoService.getUsersInfo(PageRequest.of(0, 5));
+        Page<Member> result = userInfoService.getUsersInfo(pageable);
 
         // then
         assertThat(result.getTotalElements()).isEqualTo(1L);
