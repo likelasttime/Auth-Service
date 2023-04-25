@@ -1,0 +1,80 @@
+name: CI
+on:
+push:
+    ##### 1 #####
+    branches: [main]
+
+    workflow_dispatch:
+
+jobs:
+build:
+    runs-on: ubuntu-latest
+    steps:
+    ##### 2 #####
+    # 레파지토리 check out
+    - name: Checkout source code.
+        uses: actions/checkout@v2
+
+    # node.js 버전 12
+    - uses: actions/setup-node@v2
+        with:
+        node-version: '12'
+
+    # npm 설치
+    - name: Install Dependencies
+        run: npm install
+
+    #환경변수 설정 ( 상대경로 지정 )
+    - name: Set Env
+        run: echo "PUBLIC_URL=/${GITHUB_REPOSITORY#*/}" >> $GITHUB_ENV
+
+    # 빌드
+    - name: Build
+        run: npm run build
+
+    ##### 3 #####
+    # 폴더 이름 변경
+    - name: Change folder name build to docs
+        run: mv build docs
+
+    ##### 4 #####
+    # git 인증
+    - uses: actions/labeler@v2
+        with:
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+    # git remote update
+    - name: Remote Update
+        run: git remote update
+
+    # git fetch
+    - name: Fetch
+        run: git fetch --all
+
+    # stash 생성
+    - name: Stash
+        run: git stash
+
+    # 배포용 release 생성 후 이동
+    - name: create release branch
+        run: git checkout -b release
+
+    # stash 적용
+    - name: Apply stash
+        run: git stash pop
+
+    # 사용자 인증
+    - name: Github auth and commit
+        env:
+        MY_EMAIL: [사용자 이메일]
+        MY_NAME: [사용자 이름]
+        run: |
+        git config --global user.email $MY_EMAIL
+        git config --global user.name $MY_NAME
+
+    # releaes 브랜치에 push
+    - name: git commit
+        run: |
+        git add .
+        git commit -m "Build done!"
+        git push -f --set-upstream origin release
