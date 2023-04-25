@@ -13,7 +13,7 @@ build:
     ##### 2 #####
     # 레파지토리 check out
     - name: Checkout source code.
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v2
 
     # node.js 버전 12
     - uses: actions/setup-node@v2
