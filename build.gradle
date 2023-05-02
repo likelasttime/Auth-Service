@@ -48,5 +48,9 @@ task copyPrivate(type: Copy) {
 		from 'Auth-service-sub'
 		include "*.yml"
 		into 'src/main/resources'
+
+		from 'Auth-service-sub'
+		include ".env"
+		into '.'
 	}
 }
