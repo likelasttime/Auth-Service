@@ -1,15 +1,19 @@
 version: '3'
 
 services:
+  spring-boot:
+    restart: 'on-failure'
+    build: .
+    ports:
+      - '8000:8000'
   mysql:
     image: mysql:5.7
+    ports:
+      - "3306:3306"
     volumes:
       - auth-mysql-vol:/var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: 2023
-      MYSQL_DATABASE: auth
-      MYSQL_USER: docker_user
-      MYSQL_PASSWORD: docker_user_pass
+    env_file:
+      - .env
     restart: always
   redis:
     image: redis:latest
