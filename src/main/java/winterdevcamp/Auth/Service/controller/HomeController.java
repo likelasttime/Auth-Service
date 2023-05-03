@@ -24,11 +24,11 @@ public class HomeController {
 
     @GetMapping("/user/signup")
     public String signupForm(){
-        return "/signup";
+        return "signup";
     }
 
     @GetMapping("/user/login")
-    public String login(){return "/login";}
+    public String login(){return "login";}
 
     @GetMapping("/user/verify")
     public String email_authentication(Principal principal, Model model){
@@ -40,28 +40,28 @@ public class HomeController {
         }catch(Exception e){
             log.info("사용자 정보가 없습니다.");
         }
-        return "/authentication";
+        return "authentication";
     }
 
     @GetMapping("/user/verify/{key}")
     public String verify(@PathVariable String key, Model model){
         model.addAttribute("key", key);
-        return "/verify";
+        return "verify";
     }
 
     @GetMapping("/user/password")
     public String requestPasswordMail(){
-        return "/updatePassword";
+        return "updatePassword";
     }
 
     @GetMapping("/user/password/{key}")
     public String requestPassword(){
-        return "/passwordMail";
+        return "passwordMail";
     }
 
     @GetMapping("/manage_users")
     public String getUsers(){
-        return "/manage/members";
+        return "manage/members";
     }
 
     @GetMapping("/user/info")
@@ -77,6 +77,6 @@ public class HomeController {
         }catch(NotFoundException e){
             log.info("사용자 정보가 없습니다.");
         }
-        return "/mypage";
+        return "mypage";
     }
 }
