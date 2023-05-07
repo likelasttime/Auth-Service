@@ -50,6 +50,6 @@ jobs:
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
       - name: Pull image from Amazon ECR and restart container
         run: |
-          docker pull ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
-          docker stop test_con && docker rm test_con
-          docker run -d --name test_con -p 8000:8000 --restart unless-stopped ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker stop auth-con && docker rm auth-con
+          docker run -d --name auth-con -p 8000:8000 --restart unless-stopped $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
