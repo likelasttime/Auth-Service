@@ -4,10 +4,11 @@ on: [push]
 
 env:
   AWS_REGION: ap-northeast-2
+  EC2_PUBLIC_IP_ADDRESS: ${{ secrets.EC2_PUBLIC_IP_ADDRESS }}
   ECR_REGISTRY: ${{ secrets.ECR_REGISTRY_URI }}
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
   IMAGE_TAG: ${{ github.sha }}
-
+  
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -54,4 +55,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          ssh ubuntu@<EC2_PUBLIC_IP_ADDRESS> "docker stop my-app-container; docker rm my-app-container; docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG; docker run -d --name my-app-container -p 8000:8000 $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          ssh ubuntu@$EC2_PUBLIC_IP_ADDRESS "docker stop my-app-container; docker rm my-app-container; docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG; docker run -d --name my-app-container -p 8000:8000 $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
