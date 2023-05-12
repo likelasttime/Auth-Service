@@ -1,5 +1,5 @@
-# [완료] Auth-Service
-[![image](https://github.com/likelasttime/Auth-Service/assets/46569105/755cddd2-0164-4a73-8a76-0e8d80857e62)](https://sonarcloud.io/project/overview?id=likelasttime_Auth-Service)  
+# [완료] Auth-Service 
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/project/overview?id=likelasttime_Auth-Service)   
 JWT를 이용한 인증 서비스 개인 프로젝트  
 MSA 아키텍처(📁auth-server 📁eureka-server 📁front-server 📁gateway 📁user-server)  
 Monolithic 아키텍처(📁 src)
