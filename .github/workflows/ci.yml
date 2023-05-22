@@ -1,6 +1,8 @@
-name: Java CI/CD
+name: Java CI
 
-on: [push]
+on:
+  pull_request:
+    branches: [ main, develop ]
 
 jobs:
   build:
@@ -21,12 +23,3 @@ jobs:
         uses: gradle/gradle-build-action@749f47bda3e44aa060e82d7b3ef7e40d953bd629
         with:
           arguments: build
-      - name: executing remote ssh commands using key
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
-          scripts: |
-            ./deploy.sh
